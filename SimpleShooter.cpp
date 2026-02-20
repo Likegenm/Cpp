@@ -60,22 +60,28 @@ int main() {
     int spawnCounter = 0;
     bool gameRunning = true;
     
+    cout << "Press any key to start...";
+    _getch();
+    
     while (gameRunning) {
+        // Обработка клавиш - улучшенная версия
         while (_kbhit()) {
             char key = _getch();
             
-            if (key == -32) {
+            // Обработка стрелок (для некоторых консолей)
+            if (key == -32) { // Специальный код для стрелок
                 key = _getch();
                 switch(key) {
-                    case 75:
+                    case 75: // Влево
                         if (player.x > 1) player.x--;
                         break;
-                    case 77:
+                    case 77: // Вправо
                         if (player.x < WIDTH - 2) player.x++;
                         break;
                 }
             }
             else {
+                // Обычные клавиши
                 switch(key) {
                     case 'a':
                     case 'A':
@@ -106,8 +112,9 @@ int main() {
             }
         }
         
+        // Спавн врагов
         spawnCounter++;
-        if (spawnCounter > 3) {
+        if (spawnCounter > 3) { // Увеличил частоту спавна
             Enemy newEnemy;
             newEnemy.x = rand() % (WIDTH - 2) + 1;
             newEnemy.y = 1;
@@ -116,6 +123,7 @@ int main() {
             spawnCounter = 0;
         }
         
+        // Обновление пуль
         for (auto& bullet : bullets) {
             bullet.y--;
             if (bullet.y <= 0) {
@@ -129,6 +137,7 @@ int main() {
             bullets.end()
         );
         
+        // Обновление врагов
         for (auto& enemy : enemies) {
             enemy.y++;
             if (enemy.y >= HEIGHT - 1) {
@@ -136,6 +145,7 @@ int main() {
             }
         }
         
+        // Проверка столкновений
         for (auto& bullet : bullets) {
             for (auto& enemy : enemies) {
                 if (enemy.active && bullet.active &&
@@ -163,11 +173,14 @@ int main() {
             enemies.end()
         );
         
+        // Отрисовка
         gotoxy(0, 0);
         
+        // Верхняя граница
         for (int i = 0; i < WIDTH + 2; i++) cout << "#";
         cout << endl;
         
+        // Игровое поле
         for (int y = 1; y <= HEIGHT; y++) {
             cout << "#";
             for (int x = 1; x <= WIDTH; x++) {
@@ -199,11 +212,14 @@ int main() {
             cout << "#" << endl;
         }
         
+        // Нижняя граница
         for (int i = 0; i < WIDTH + 2; i++) cout << "#";
         cout << endl;
         
+        // Информация
         cout << "Score: " << score << "  ";
         cout << "A/D: move, Space: shoot, Q: quit" << endl;
+        cout << "Player X: " << player.x << "  "; // Отладка позиции
         
         Sleep(50);
     }
